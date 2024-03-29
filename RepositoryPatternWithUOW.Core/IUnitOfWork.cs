@@ -12,7 +12,11 @@ namespace RepositoryPatternWithUOW.Core
     {
         IBaseRepository<Author> Authors { get; }
         IBooksRepository Books { get; }
-
+        IBaseRepository<Customer> Customers { get; }
+        IBaseRepository<Item> Items { get; }
+        IBaseRepository<Order> Orders { get; }
+        IBaseRepository<OrderDetail> OrderDetails { get; }
+        IBaseRepository<UOM> UOMs { get; }
         int Complete();
     }
 }
