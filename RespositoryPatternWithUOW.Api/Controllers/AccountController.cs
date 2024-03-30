@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using RepositoryPatternWithUOW.Core.Dtos;
 using RepositoryPatternWithUOW.Core.Models;
+using System;
 using System.Data;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace RespositoryPatternWithUOW.Api.Controllers
@@ -42,8 +46,9 @@ namespace RespositoryPatternWithUOW.Api.Controllers
             return BadRequest(result.Errors);
         }
 
+        //[Authorize]
         [Authorize(Roles = "Admin")]
-        [HttpPost("create-admin")]
+        [HttpPost("createAdmin")]
         public async Task<IActionResult> CreateAdminUser([FromBody] RegistrationModel model)
         {
             var user = new ApplicationUser

@@ -11,9 +11,11 @@ using System.Threading.Tasks;
 using System;
 using RepositoryPatternWithUOW.Core.Dtos;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RespositoryPatternWithUOW.Api.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -33,7 +35,7 @@ namespace RespositoryPatternWithUOW.Api.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
-                var token = GenerateJwtTokenAsync(user);
+                var token = await GenerateJwtTokenAsync(user);
 
                 return Ok(new { token = token });
             }
@@ -44,52 +46,34 @@ namespace RespositoryPatternWithUOW.Api.Controllers
         private async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
         {
             var roles = await _userManager.GetRolesAsync(user);
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var secretKey = GetJwtSecretKey();
-            var claims = GetUserClaims(user, roles);
-            var signingCredentials = GetSigningCredentials(secretKey);
-            var issuer = _configuration["JwtConfig:Issuer"];
-            var audience = _configuration["JwtConfig:Audience"];
 
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = signingCredentials,
-                Issuer = issuer,
-                Audience = audience
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
-        }
-
-        private byte[] GetJwtSecretKey()
-        {
-            var secret = _configuration["JwtConfig:Secret"];
-            return Encoding.ASCII.GetBytes(secret);
-        }
-
-        private IList<Claim> GetUserClaims(ApplicationUser user, IList<string> roles)
-        {
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Email, user.Email)
             };
 
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            }
-
-            return claims;
+            roles.ToList().ForEach(role => claims.Add(new Claim(ClaimTypes.Role, role)));
+            return GetToken(claims, _configuration);
         }
-
-        private SigningCredentials GetSigningCredentials(byte[] secretKey)
+        private string GetToken(List<Claim> claims, IConfiguration configuration)
         {
-            return new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha256Signature);
+            var jwtConfig = configuration.GetSection("JwtConfig");
+
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig["Secret"]));
+            var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+
+            var tokenOptions = new JwtSecurityToken(
+                issuer: jwtConfig["Issuer"],
+                audience: jwtConfig["Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtConfig["AccessTokenExpirationMinutes"])),
+                signingCredentials: signingCredentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
         }
+      
 
     }
 

@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -19,8 +18,11 @@ using RepositoryPatternWithUOW.EF.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace RespositoryPatternWithUOW.Api
 {
@@ -37,30 +39,29 @@ namespace RespositoryPatternWithUOW.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            var jwtConfig = Configuration.GetSection("JwtConfig");
-            var secretKey = Encoding.ASCII.GetBytes(jwtConfig["Secret"]);
 
-            services.AddAuthentication(x =>
+            services.AddSession(options =>
             {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(secretKey),
-                    ValidateIssuer = true,
-                    ValidIssuer = jwtConfig["Issuer"],
-                    ValidateAudience = true,
-                    ValidAudience = jwtConfig["Audience"],
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero
-                };
             });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder =>
+                    builder.WithOrigins("https://localhost:4200") 
+                           .AllowAnyMethod()
+                           .AllowAnyHeader()
+                           .AllowCredentials()); 
+            });
+            var redisCacheSettings = Configuration.GetSection("RedisCacheSettings");
+
+            var jwtConfig = Configuration.GetSection("JwtConfig");
+           
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisCacheSettings["Configuration"];
+            });
+           
 
             services.AddDbContext<ApplicationDbContext>(options => 
                 options.UseSqlServer(
@@ -72,6 +73,26 @@ namespace RespositoryPatternWithUOW.Api
                 options.Password.RequireDigit = false;
                 options.Password.RequireLowercase = false;
             }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtConfig["Issuer"],
+                    ValidAudience = jwtConfig["Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig["Secret"]))
+                };
+            });
 
             //services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
@@ -106,6 +127,7 @@ namespace RespositoryPatternWithUOW.Api
                      }
                 });
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -120,11 +142,9 @@ namespace RespositoryPatternWithUOW.Api
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
+            app.UseCors("CorsPolicy");
             app.UseAuthentication();
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
