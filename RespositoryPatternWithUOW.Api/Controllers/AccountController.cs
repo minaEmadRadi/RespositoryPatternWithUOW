@@ -10,7 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RespositoryPatternWithUOW.Api.Controllers
+namespace RepositoryPatternWithUOW.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

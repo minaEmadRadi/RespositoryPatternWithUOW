@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-namespace RespositoryPatternWithUOW.Api
+namespace RepositoryPatternWithUOW.Api
 {
     public class Startup
     {

@@ -13,7 +13,7 @@ using RepositoryPatternWithUOW.Core.Dtos;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RespositoryPatternWithUOW.Api.Controllers
+namespace RepositoryPatternWithUOW.Api.Controllers
 {
 
     [Route("api/[controller]")]
