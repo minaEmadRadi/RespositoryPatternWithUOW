@@ -15,15 +15,15 @@ namespace RepositoryPatternWithUOW.EF.Services
 {
     public class AuthService :IAuthService
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<Customer> _userManager;
         private readonly IConfiguration _configuration;
 
-        public AuthService(UserManager<ApplicationUser> userManager, IConfiguration configuration)
+        public AuthService(UserManager<Customer> userManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _configuration = configuration;
         }
-        public async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
+        public async Task<string> GenerateJwtTokenAsync(Customer user)
         {
             var roles = await _userManager.GetRolesAsync(user);
 

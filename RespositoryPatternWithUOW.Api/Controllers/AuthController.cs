@@ -12,10 +12,10 @@ namespace RepositoryPatternWithUOW.Api.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<Customer> _userManager;
         private readonly IAuthService _auth;
 
-        public AuthController(UserManager<ApplicationUser> userManager, IAuthService auth)
+        public AuthController(UserManager<Customer> userManager, IAuthService auth)
         {
             _userManager = userManager;
             _auth = auth;

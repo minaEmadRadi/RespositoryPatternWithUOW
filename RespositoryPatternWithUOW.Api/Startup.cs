@@ -12,10 +12,10 @@ using RepositoryPatternWithUOW.Core.Models;
 using RepositoryPatternWithUOW.EF;
 using System.Collections.Generic;
 using System.Text;
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using RepositoryPatternWithUOW.EF.Services;
 using RepositoryPatternWithUOW.Core.Interfaces;
+using AutoMapper;
 
 namespace RepositoryPatternWithUOW.Api
 {
@@ -61,7 +61,7 @@ namespace RepositoryPatternWithUOW.Api
                     Configuration.GetConnectionString("DefaultConnection"),
                         b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            services.AddIdentity<Customer, IdentityRole>(options =>
             {
                 options.Password.RequireDigit = false;
                 options.Password.RequireLowercase = false;
@@ -85,6 +85,8 @@ namespace RepositoryPatternWithUOW.Api
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig["Secret"]))
                 };
             });
+
+            services.AddAutoMapper(typeof(Startup));
 
             //services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
@@ -134,7 +136,7 @@ namespace RepositoryPatternWithUOW.Api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RespositoryPatternWithUOW.Api v1"));
             }
-
+      
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors("CorsPolicy");

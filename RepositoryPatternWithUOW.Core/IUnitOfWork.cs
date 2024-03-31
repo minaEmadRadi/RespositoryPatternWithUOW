@@ -10,13 +10,10 @@ namespace RepositoryPatternWithUOW.Core
 {
     public interface IUnitOfWork : IDisposable
     {
-        IBaseRepository<Author> Authors { get; }
-        IBooksRepository Books { get; }
-        IBaseRepository<Customer> Customers { get; }
-        IBaseRepository<Item> Items { get; }
-        IBaseRepository<Order> Orders { get; }
-        IBaseRepository<OrderDetail> OrderDetails { get; }
-        IBaseRepository<UOM> UOMs { get; }
+        IItemRepository Items { get; }
+        IOrderRepository Orders { get; }
+        IOrderDetailRepository OrderDetails { get; }
+        IUOMRepository UOMs { get; }
         int Complete();
     }
 }

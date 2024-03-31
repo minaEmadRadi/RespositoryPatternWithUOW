@@ -16,10 +16,10 @@ namespace RepositoryPatternWithUOW.Api.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<Customer> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AccountController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public AccountController(UserManager<Customer> userManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -28,11 +28,11 @@ namespace RepositoryPatternWithUOW.Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> RegisterUser([FromBody] RegistrationModel model)
         {
-            var user = new ApplicationUser
+            var user = new Customer
             {
                 UserName = model.Email,
                 Email = model.Email,
-                FullName = model.FullName
+                CustomerName = model.FullName
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
@@ -51,11 +51,11 @@ namespace RepositoryPatternWithUOW.Api.Controllers
         [HttpPost("createAdmin")]
         public async Task<IActionResult> CreateAdminUser([FromBody] RegistrationModel model)
         {
-            var user = new ApplicationUser
+            var user = new Customer
             {
                 UserName = model.Email,
                 Email = model.Email,
-                FullName = model.FullName
+                CustomerName = model.FullName
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);

@@ -15,8 +15,8 @@ namespace RepositoryPatternWithUOW.Core.Models
         public int Quantity { get; set; }
         public decimal TotalPrice { get; set; }
 
-        public Order Order { get; set; }
-        public Item Item { get; set; }
+        public virtual Order Order { get; set; }
+        public virtual Item Item { get; set; }
     }
 
 }

@@ -24,7 +24,7 @@ namespace RepositoryPatternWithUOW.Api
                 try
                 {
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                    var userManager = services.GetRequiredService<UserManager<Customer>>();
                     SeedRolesAndAdminUser(roleManager,userManager).Wait();
                 }
                 catch (Exception ex)
@@ -36,7 +36,7 @@ namespace RepositoryPatternWithUOW.Api
 
             host.Run();
         }
-        private static async Task SeedRolesAndAdminUser(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
+        private static async Task SeedRolesAndAdminUser(RoleManager<IdentityRole> roleManager, UserManager<Customer> userManager)
         {
             if (!await roleManager.RoleExistsAsync("Admin"))
             {
@@ -50,7 +50,7 @@ namespace RepositoryPatternWithUOW.Api
             var adminUser = await userManager.FindByNameAsync(adminUserName);
             if (adminUser == null)
             {
-                adminUser = new ApplicationUser { FullName= adminUserName, UserName = adminUserName, Email = adminUserName };
+                adminUser = new Customer { CustomerName = adminUserName, UserName = adminUserName, Email = adminUserName };
                 await userManager.CreateAsync(adminUser, "AdminPassword123!"); 
                 await userManager.AddToRoleAsync(adminUser, "Admin");
             }

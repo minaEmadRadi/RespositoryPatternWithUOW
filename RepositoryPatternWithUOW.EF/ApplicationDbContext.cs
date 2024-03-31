@@ -9,14 +9,12 @@ using System.Threading.Tasks;
 
 namespace RepositoryPatternWithUOW.EF
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<Customer>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 
-        public DbSet<Author> Authors { get; set; }
-        public DbSet<Book> Books { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<Order> Orders { get; set; }

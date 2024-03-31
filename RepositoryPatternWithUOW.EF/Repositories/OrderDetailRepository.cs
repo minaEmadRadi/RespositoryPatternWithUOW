@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RepositoryPatternWithUOW.EF.Repositories
 {
-    public class OrderDetailRepository : BaseRepository<OrderDetail>, IBaseRepository<OrderDetail>
+    public class OrderDetailRepository : BaseRepository<OrderDetail>, IOrderDetailRepository
     {
         private readonly ApplicationDbContext _context;
 

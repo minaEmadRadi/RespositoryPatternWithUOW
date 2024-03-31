@@ -7,6 +7,6 @@ namespace RepositoryPatternWithUOW.Core.Interfaces
 {
     public interface IAuthService
     {
-        Task<string> GenerateJwtTokenAsync(ApplicationUser user);     
+        Task<string> GenerateJwtTokenAsync(Customer user);     
     }
 }

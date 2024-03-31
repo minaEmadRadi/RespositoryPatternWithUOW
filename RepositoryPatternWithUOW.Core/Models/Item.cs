@@ -8,6 +8,10 @@ namespace RepositoryPatternWithUOW.Core.Models
 {
     public class Item
     {
+        public Item()
+        {
+            OrderDetails=new HashSet<OrderDetail>();
+        }
         public int Id { get; set; }
         public string ItemName { get; set; }
         public string Description { get; set; }
@@ -16,8 +20,8 @@ namespace RepositoryPatternWithUOW.Core.Models
         public int QTY { get; set; }
 
        
-        public UOM UOM { get; set; } // Unit of Measure
-        public ICollection<OrderDetail> OrderDetails { get; set; }
+        public virtual UOM UOM { get; set; } =new UOM();
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 
 }
