@@ -56,6 +56,7 @@ namespace RepositoryPatternWithUOW.Api.Controllers
             try
             {
                 var item = _mapper.Map<Item>(itemDto);
+
                 if (item == null)
                     return BadRequest();
 
