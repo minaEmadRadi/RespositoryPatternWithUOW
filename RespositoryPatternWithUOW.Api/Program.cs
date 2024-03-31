@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RespositoryPatternWithUOW.Api
+namespace RepositoryPatternWithUOW.Api
 {
     public class Program
     {

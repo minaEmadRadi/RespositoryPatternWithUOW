@@ -14,8 +14,9 @@ using System.Collections.Generic;
 using System.Text;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using RepositoryPatternWithUOW.EF.Services;
 
-namespace RespositoryPatternWithUOW.Api
+namespace RepositoryPatternWithUOW.Api
 {
     public class Startup
     {
@@ -87,6 +88,8 @@ namespace RespositoryPatternWithUOW.Api
 
             //services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IAuthService, AuthService>();
+
 
             services.AddSwaggerGen(c =>
             {

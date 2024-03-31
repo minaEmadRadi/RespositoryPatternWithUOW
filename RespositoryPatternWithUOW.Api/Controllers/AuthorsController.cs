@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RespositoryPatternWithUOW.Api.Controllers
+namespace RepositoryPatternWithUOW.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
