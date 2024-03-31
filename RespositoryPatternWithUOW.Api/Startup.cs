@@ -23,6 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using RepositoryPatternWithUOW.EF.Services;
 
 namespace RepositoryPatternWithUOW.Api
 {
@@ -96,6 +97,8 @@ namespace RepositoryPatternWithUOW.Api
 
             //services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IAuthService, AuthService>();
+
 
             services.AddSwaggerGen(c =>
             {
