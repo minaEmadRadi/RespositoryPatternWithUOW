@@ -9,16 +9,12 @@ namespace RepositoryPatternWithUOW.Core.Models
 {
     public class UOM
     {
-        public UOM()
-        {
-            Items =new HashSet<Item>();
-        }
+        
         public int Id { get; set; }
         [Column("UOM")]
         public string UOMName { get; set; } 
         public string Description { get; set; }
 
-        public virtual ICollection<Item> Items { get; set; }
     }
 
 }

@@ -8,10 +8,7 @@ namespace RepositoryPatternWithUOW.Core.Models
 {
     public class Item
     {
-        public Item()
-        {
-            OrderDetails=new HashSet<OrderDetail>();
-        }
+        
         public int Id { get; set; }
         public string ItemName { get; set; }
         public string Description { get; set; }

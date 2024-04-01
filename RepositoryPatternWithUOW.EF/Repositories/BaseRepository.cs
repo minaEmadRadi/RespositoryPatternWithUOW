@@ -26,7 +26,7 @@ namespace RepositoryPatternWithUOW.EF.Repositories
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await _context.Set<T>().ToListAsync();
+            return await _context.Set<T>().AsNoTracking().ToListAsync();
         }
 
         public T GetById(int id)
@@ -69,7 +69,7 @@ namespace RepositoryPatternWithUOW.EF.Repositories
                 foreach (var include in includes)
                     query = query.Include(include);
 
-            return query.Where(criteria).ToList();
+            return query.Where(criteria).AsNoTracking().ToList();
         }
 
         public IEnumerable<T> FindAll(Expression<Func<T, bool>> criteria, int skip, int take)
@@ -107,7 +107,7 @@ namespace RepositoryPatternWithUOW.EF.Repositories
                 foreach (var include in includes)
                     query = query.Include(include);
 
-            return await query.Where(criteria).ToListAsync();
+            return await query.Where(criteria).AsNoTracking().ToListAsync();
         }
 
         public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria, int take, int skip)

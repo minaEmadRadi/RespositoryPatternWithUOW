@@ -35,8 +35,7 @@ namespace RepositoryPatternWithUOW.Api.Controllers
         {
             try
             {
-                var items = await _unitOfWork.Items.GetAllAsync();
-
+                var items = await _unitOfWork.Items.FindAllAsync(x=>true, new string [] { nameof(UOM) });
                 if (items == null)
                 {
                     return NotFound("No items found.");
@@ -90,7 +89,7 @@ namespace RepositoryPatternWithUOW.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateItem(int id, [FromBody] ItemDto itemDto)
+        public IActionResult UpdateItem(int id, [FromBody] ItemDto itemDto)
         {
             if (id != itemDto.Id)
             {

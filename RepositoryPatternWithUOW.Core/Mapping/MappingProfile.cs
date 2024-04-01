@@ -11,7 +11,9 @@ public class MappingProfile : Profile
         opt => {
             opt.Condition(src => src.Id > 0);
             opt.MapFrom(src => src.Id);
-        }).ForMember(dest => dest.ItemName, opt => opt.MapFrom(src => src.ItemName)).ReverseMap(); 
+        }).ForMember(dest => dest.ItemName, opt => opt.MapFrom(src => src.ItemName))
+        .ReverseMap();
+        
 
     }
 }
