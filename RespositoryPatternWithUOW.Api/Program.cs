@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using RepositoryPatternWithUOW.Core.Consts;
 using RepositoryPatternWithUOW.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -38,13 +39,13 @@ namespace RepositoryPatternWithUOW.Api
         }
         private static async Task SeedRolesAndAdminUser(RoleManager<IdentityRole> roleManager, UserManager<Customer> userManager)
         {
-            if (!await roleManager.RoleExistsAsync("Admin"))
+            if (!await roleManager.RoleExistsAsync(UserRoles.Admin))
             {
-                await roleManager.CreateAsync(new IdentityRole("Admin"));
+                await roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
             }
-            if (!await roleManager.RoleExistsAsync("Customer"))
+            if (!await roleManager.RoleExistsAsync(UserRoles.Customer))
             {
-                await roleManager.CreateAsync(new IdentityRole("Customer"));
+                await roleManager.CreateAsync(new IdentityRole(UserRoles.Customer));
             }
             var adminUserName = "admin@example.com";
             var adminUser = await userManager.FindByNameAsync(adminUserName);
@@ -52,7 +53,7 @@ namespace RepositoryPatternWithUOW.Api
             {
                 adminUser = new Customer { CustomerName = adminUserName, UserName = adminUserName, Email = adminUserName };
                 await userManager.CreateAsync(adminUser, "AdminPassword123!"); 
-                await userManager.AddToRoleAsync(adminUser, "Admin");
+                await userManager.AddToRoleAsync(adminUser, UserRoles.Admin);
             }
         }
         public static IHostBuilder CreateHostBuilder(string[] args) =>

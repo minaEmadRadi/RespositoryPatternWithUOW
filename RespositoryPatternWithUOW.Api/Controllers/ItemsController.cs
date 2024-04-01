@@ -7,6 +7,9 @@ using System;
 using System.Collections.Generic;
 using RepositoryPatternWithUOW.Core.Dtos;
 using AutoMapper;
+using RepositoryPatternWithUOW.Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using RepositoryPatternWithUOW.Core.Consts;
 
 namespace RepositoryPatternWithUOW.Api.Controllers
 {
@@ -16,11 +19,15 @@ namespace RepositoryPatternWithUOW.Api.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IRedisService _redisService;
 
-        public ItemsController(IUnitOfWork unitOfWork, IMapper mapper)
+        
+        public ItemsController(IUnitOfWork unitOfWork, IMapper mapper, IRedisService redisService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _redisService = redisService;
+
         }
 
         [HttpGet]
@@ -66,7 +73,6 @@ namespace RepositoryPatternWithUOW.Api.Controllers
             }
             catch (Exception)
             {
-                // Log the exception
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     "Error creating new item record");
             }
@@ -104,11 +110,10 @@ namespace RepositoryPatternWithUOW.Api.Controllers
                 _unitOfWork.Items.Update(item);
                 _unitOfWork.Complete();
 
-                return NoContent(); // HTTP 204
+                return NoContent();
             }
             catch (Exception)
             {
-                // Log the exception
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     "Error updating item");
             }
@@ -128,16 +133,57 @@ namespace RepositoryPatternWithUOW.Api.Controllers
                 _unitOfWork.Items.Delete(itemToDelete);
                 _unitOfWork.Complete();
 
-                return NoContent(); // HTTP 204
+                return NoContent(); 
             }
             catch (Exception)
             {
-                // Log the exception
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     "Error deleting item");
             }
         }
 
+        [Authorize(Roles = UserRoles.Admin)]
+        [HttpPost("save-exchange-rate")]
+        public async Task<IActionResult> SaveExchangeRate([FromBody] CurrencyExchangeRateDto dto)
+        {
+            if (dto == null || string.IsNullOrWhiteSpace(dto.CurrencyCode))
+            {
+                return BadRequest("Invalid currency exchange rate data.");
+            }
+
+            try
+            {
+                await _redisService.SetStringAsync(dto.CurrencyCode, dto.ExchangeRate.ToString());
+                return Ok($"Exchange rate for {dto.CurrencyCode} saved successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error saving the exchange rate: {ex.Message}");
+            }
+        }
+        [HttpGet("get-exchange-rate")]
+        public async Task<IActionResult> GetExchangeRate([FromQuery] string currencyCode)
+        {
+            if (string.IsNullOrWhiteSpace(currencyCode))
+            {
+                return BadRequest("Currency code is required.");
+            }
+
+            try
+            {
+                var exchangeRate = await _redisService.GetStringAsync(currencyCode);
+                if (exchangeRate == null)
+                {
+                    return NotFound($"Exchange rate for {currencyCode} not found.");
+                }
+
+                return Ok(exchangeRate);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error retrieving the exchange rate: {ex.Message}");
+            }
+        }
 
 
 

@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using RepositoryPatternWithUOW.EF.Services;
 using RepositoryPatternWithUOW.Core.Interfaces;
 using AutoMapper;
+using StackExchange.Redis;
+using System;
 
 namespace RepositoryPatternWithUOW.Api
 {
@@ -28,14 +30,10 @@ namespace RepositoryPatternWithUOW.Api
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
 
-            services.AddSession(options =>
-            {
-            });
 
             services.AddCors(options =>
             {
@@ -48,13 +46,10 @@ namespace RepositoryPatternWithUOW.Api
             var redisCacheSettings = Configuration.GetSection("RedisCacheSettings");
 
             var jwtConfig = Configuration.GetSection("JwtConfig");
-           
 
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = redisCacheSettings["Configuration"];
-            });
-           
+            var multiplexer = ConnectionMultiplexer.Connect(redisCacheSettings["Configuration"]);
+            services.AddSingleton<IConnectionMultiplexer>(multiplexer);
+
 
             services.AddDbContext<ApplicationDbContext>(options => 
                 options.UseSqlServer(
@@ -88,9 +83,11 @@ namespace RepositoryPatternWithUOW.Api
 
             services.AddAutoMapper(typeof(Startup));
 
-            //services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IAuthService, AuthService>();
+            services.AddScoped<IRedisService, RedisService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddTransient<ICurrencyService, CurrencyService>();
 
 
             services.AddSwaggerGen(c =>

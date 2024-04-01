@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using RepositoryPatternWithUOW.Core.Consts;
 using RepositoryPatternWithUOW.Core.Dtos;
 using RepositoryPatternWithUOW.Core.Models;
 using System;
@@ -47,7 +48,7 @@ namespace RepositoryPatternWithUOW.Api.Controllers
         }
 
         //[Authorize]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = UserRoles.Admin)]
         [HttpPost("createAdmin")]
         public async Task<IActionResult> CreateAdminUser([FromBody] RegistrationModel model)
         {

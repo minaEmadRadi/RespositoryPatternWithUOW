@@ -11,4 +11,11 @@ namespace RepositoryPatternWithUOW.Core.Consts
         public const string Ascending = "ASC";
         public const string Descending = "DESC";
     }
+    
+    public static class UserRoles
+    {
+        public const string Admin = "Admin";
+        public const string Customer = "Customer";
+    }
+    
 }
