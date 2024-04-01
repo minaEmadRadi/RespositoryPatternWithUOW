@@ -20,7 +20,7 @@ namespace RepositoryPatternWithUOW.Core.Models
         public int QTY { get; set; }
 
        
-        public virtual UOM UOM { get; set; } =new UOM();
+        public virtual UOM UOM { get; set; } 
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 

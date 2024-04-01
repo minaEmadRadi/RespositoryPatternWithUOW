@@ -66,6 +66,9 @@ namespace RepositoryPatternWithUOW.Api.Controllers
                     return BadRequest();
 
                 var createdItem = await _unitOfWork.Items.AddAsync(item);
+                _unitOfWork.Complete();
+
+
                 return CreatedAtAction(nameof(GetItem), new { id = createdItem.Id }, createdItem);
             }
             catch (Exception)
@@ -93,13 +96,6 @@ namespace RepositoryPatternWithUOW.Api.Controllers
             {
                 return BadRequest("Item ID mismatch");
             }
-
-            var itemToUpdate = await _unitOfWork.Items.GetByIdAsync(id);
-            if (itemToUpdate == null)
-            {
-                return NotFound($"Item with Id = {id} not found");
-            }
-
             try
             {
                 var item = _mapper.Map<Item>(itemDto);
