@@ -46,9 +46,7 @@ namespace RepositoryPatternWithUOW.Api.Controllers
             }
             catch (Exception)
             {
-                // Log the exception
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error retrieving data from the database");
+                return StatusCode(StatusCodes.Status500InternalServerError,"Error retrieving data from the database");
             }
         }
 
@@ -68,13 +66,11 @@ namespace RepositoryPatternWithUOW.Api.Controllers
                     return BadRequest();
 
                 var createdItem = await _unitOfWork.Items.AddAsync(item);
-
                 return CreatedAtAction(nameof(GetItem), new { id = createdItem.Id }, createdItem);
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error creating new item record");
+                return StatusCode(StatusCodes.Status500InternalServerError,"Error creating new item record");
             }
         }
         [HttpGet("{id}")]
@@ -114,8 +110,7 @@ namespace RepositoryPatternWithUOW.Api.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error updating item");
+                return StatusCode(StatusCodes.Status500InternalServerError,"Error updating item");
             }
         }
 
@@ -137,8 +132,7 @@ namespace RepositoryPatternWithUOW.Api.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error deleting item");
+                return StatusCode(StatusCodes.Status500InternalServerError,"Error deleting item");
             }
         }
 
@@ -184,9 +178,6 @@ namespace RepositoryPatternWithUOW.Api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error retrieving the exchange rate: {ex.Message}");
             }
         }
-
-
-
 
     }
 }
