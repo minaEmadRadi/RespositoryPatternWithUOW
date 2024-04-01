@@ -47,7 +47,6 @@ namespace RepositoryPatternWithUOW.Api.Controllers
             return BadRequest(result.Errors);
         }
 
-        //[Authorize]
         [Authorize(Roles = UserRoles.Admin)]
         [HttpPost("createAdmin")]
         public async Task<IActionResult> CreateAdminUser([FromBody] RegistrationModel model)

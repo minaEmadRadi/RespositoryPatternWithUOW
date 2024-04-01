@@ -31,7 +31,6 @@ namespace RepositoryPatternWithUOW.Api
                 catch (Exception ex)
                 {
                     throw ex;
-                    // Log errors or handle exceptions
                 }
             }
 
