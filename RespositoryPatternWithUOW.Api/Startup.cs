@@ -18,6 +18,7 @@ using RepositoryPatternWithUOW.Core.Interfaces;
 using AutoMapper;
 using StackExchange.Redis;
 using System;
+using RepositoryPatternWithUOW.Core.Mapping;
 
 namespace RepositoryPatternWithUOW.Api
 {
@@ -81,7 +82,15 @@ namespace RepositoryPatternWithUOW.Api
                 };
             });
 
-            services.AddAutoMapper(typeof(Startup));
+            var mappingProfile = new MappingProfile();
+            var mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(mappingProfile);
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+
+            services.AddSingleton(mapper);
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IAuthService, AuthService>();

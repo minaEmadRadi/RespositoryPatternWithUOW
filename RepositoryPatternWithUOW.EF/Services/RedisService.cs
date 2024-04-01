@@ -19,7 +19,7 @@ public class RedisService : IRedisService
     public RedisService(IConnectionMultiplexer redisConnection, IConfiguration configuration)
     {
         _redisConnection = redisConnection;
-        var expirationInSeconds = int.Parse(configuration["RedisCacheSettings:DefaultExpirationTime"]);
+        var expirationInSeconds = int.Parse(configuration["RedisCacheSettings:DefaultTTL"]);
         _defaultExpirationTime = TimeSpan.FromSeconds(expirationInSeconds);
     }
     public RedisService(IConnectionMultiplexer redisConnection)
