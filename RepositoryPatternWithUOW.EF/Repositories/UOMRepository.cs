@@ -10,7 +10,6 @@ namespace RepositoryPatternWithUOW.EF.Repositories
 {
     public class UOMRepository : BaseRepository<UOM>, IUOMRepository
     {
-        private readonly ApplicationDbContext _context;
 
         public UOMRepository(ApplicationDbContext context) : base(context)
         {

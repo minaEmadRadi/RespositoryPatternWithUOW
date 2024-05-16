@@ -10,7 +10,6 @@ namespace RepositoryPatternWithUOW.EF.Repositories
 {
     public class ItemRepository : BaseRepository<Item>, IItemRepository
     {
-        private readonly ApplicationDbContext _context;
 
         public ItemRepository(ApplicationDbContext context) : base(context)
         {
@@ -18,7 +17,7 @@ namespace RepositoryPatternWithUOW.EF.Repositories
 
         public IEnumerable<Item> SpecialMethod()
         {
-            throw new NotImplementedException();
+          return  _context.Items.ToList();
         }
     }
 

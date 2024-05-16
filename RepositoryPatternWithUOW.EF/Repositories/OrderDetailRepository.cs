@@ -10,7 +10,6 @@ namespace RepositoryPatternWithUOW.EF.Repositories
 {
     public class OrderDetailRepository : BaseRepository<OrderDetail>, IOrderDetailRepository
     {
-        private readonly ApplicationDbContext _context;
 
         public OrderDetailRepository(ApplicationDbContext context) : base(context)
         {
